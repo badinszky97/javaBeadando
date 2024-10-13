@@ -31,6 +31,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers ("/resources/**", "/", "/regisztral", "/regisztral_feldolgoz").anonymous()
+                                .requestMatchers("/resources/**", "/","/korlatozasok").authenticated()
                                 .requestMatchers("/resources/**", "/","/home").authenticated()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers ("/resources/**", "/", "/regisztral", "/regisztral_feldolgoz").anonymous()

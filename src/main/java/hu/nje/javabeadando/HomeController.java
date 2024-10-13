@@ -14,10 +14,47 @@ public class HomeController {
     public String home() {
         return "index";
     }
+
+    @Autowired private KorlatozasRepo korlatozasRepo;
+    @Autowired private MértékRepo mertekrepo;
+    @Autowired private MegnevezésRepo megnevezésRepo;
+    @GetMapping("/korlatozasok")
+    public String Korlatok(Model model) {
+        String str = A();
+        model.addAttribute("str", str);
+        return "korlatozasok";
+    }
+    String A(){
+        String str="";
+
+        for(Korlatozas asd: korlatozasRepo.findAll()){
+            str+="<tr>";
+
+            str+="<td>" + asd.getUtszam() + "</td>";
+            str+="<td>" + asd.getKezdet() + " km</td>";
+            str+="<td>" + asd.getVeg() + " km</td>";
+            str+="<td>" + asd.getTelepules() + "</td>";
+            str+="<td>" + asd.getMettol() + "</td>";
+            str+="<td>" + asd.getMeddig() + "</td>";
+
+
+            str+="<td>" + megnevezésRepo.findById(asd.getMegnevid()).get().getNev() + "</td>";
+
+
+            str+="<td>" + mertekrepo.findById(asd.getMertekid()).get().getNev() + "</td>";
+            str+="<td>" + asd.getSebesseg() + " km/h</td>";
+
+            str+="</tr>";
+        }
+        return str;
+    }
+
     @GetMapping("/home")
-    public String user() {
+    public String homeoldal() {
         return "user";
     }
+
+
     @GetMapping("/admin/home")
     public String admin() {
         return "admin";
