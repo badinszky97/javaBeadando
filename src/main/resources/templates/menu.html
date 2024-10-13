@@ -4,6 +4,12 @@
 <span sec:authorize="isAnonymous()">
 <a th:href="@{/login}">Login</a>
 </span>
+
+        <span sec:authorize="isAnonymous()">
+<a th:href="@{/regisztral}">Regisztrál</a>
+</span>
+
+
         <span sec:authorize="isAuthenticated()">
 <a th:href="@{/home}">Home</a>
 <a th:href="@{/logout}">Logout</a>
