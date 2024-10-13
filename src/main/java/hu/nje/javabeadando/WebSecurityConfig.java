@@ -34,8 +34,10 @@ public class WebSecurityConfig {
                                 .requestMatchers("/resources/**", "/","/korlatozasok").authenticated()
                                 .requestMatchers("/resources/**", "/","/home").authenticated()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/admin/**", "/admin/uzenetek").hasRole("ADMIN")
                                 .requestMatchers ("/resources/**", "/", "/regisztral", "/regisztral_feldolgoz").anonymous()
-                                .requestMatchers ("/resources/**", "/", "/kapcsolat", "/kapcsolat_eredmeny").anonymous()
+                                .requestMatchers ("/resources/**", "/", "/kapcsolat", "/kapcsolat_eredmeny").permitAll()
+
 
                 )
                 .formLogin(

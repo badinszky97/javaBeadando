@@ -29,6 +29,8 @@
 
 
 
+
+
                 <span sec:authorize="isAuthenticated()">
                    <li class="nav-item">
                         <a class="nav-link" th:href="@{/home}">Home</a>
@@ -40,8 +42,15 @@
                    </li>
                 </span>
                 <span sec:authorize="isAuthenticated()">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/kapcsolat}">Kapcsolat</a>
+                </li>
+                </span>
+
+
+                <span sec:authorize="hasRole('ROLE_ADMIN')">
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/logout}">Logout</a>
+                        <a class="nav-link" th:href="@{/admin/uzenetek}">Kapott üzenetek</a>
                    </li>
                 </span>
 
@@ -51,15 +60,11 @@
                    </li>
                 </span>
 
-
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/login}">
-                        <span sec:authorize="isAnonymous()">
-                            Login
-                        </span>
-                    </a>
-                </li>
-
+                <span sec:authorize="isAuthenticated()">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}">Logout</a>
+                   </li>
+                </span>
 
             </ul>
         </div>

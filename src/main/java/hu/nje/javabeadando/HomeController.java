@@ -1,5 +1,7 @@
 package hu.nje.javabeadando;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,27 +35,51 @@ public class HomeController {
     String A(){
         String str="";
 
-        for(Korlatozas asd: korlatozasRepo.findAll()){
+        for(Korlatozas korlatozas_egyed: korlatozasRepo.findAll()){
             str+="<tr>";
 
-            str+="<td>" + asd.getUtszam() + "</td>";
-            str+="<td>" + asd.getKezdet() + " km</td>";
-            str+="<td>" + asd.getVeg() + " km</td>";
-            str+="<td>" + asd.getTelepules() + "</td>";
-            str+="<td>" + asd.getMettol() + "</td>";
-            str+="<td>" + asd.getMeddig() + "</td>";
+            str+="<td>" + korlatozas_egyed.getUtszam() + "</td>";
+            str+="<td>" + korlatozas_egyed.getKezdet() + " km</td>";
+            str+="<td>" + korlatozas_egyed.getVeg() + " km</td>";
+            str+="<td>" + korlatozas_egyed.getTelepules() + "</td>";
+            str+="<td>" + korlatozas_egyed.getMettol() + "</td>";
+            str+="<td>" + korlatozas_egyed.getMeddig() + "</td>";
 
 
-            str+="<td>" + megnevezésRepo.findById(asd.getMegnevid()).get().getNev() + "</td>";
+            str+="<td>" + megnevezésRepo.findById(korlatozas_egyed.getMegnevid()).get().getNev() + "</td>";
 
 
-            str+="<td>" + mertekrepo.findById(asd.getMertekid()).get().getNev() + "</td>";
-            str+="<td>" + asd.getSebesseg() + " km/h</td>";
+            str+="<td>" + mertekrepo.findById(korlatozas_egyed.getMertekid()).get().getNev() + "</td>";
+            str+="<td>" + korlatozas_egyed.getSebesseg() + " km/h</td>";
+
+            str+="</tr>";
+
+        }
+        return str;
+    }
+
+
+    @GetMapping("/admin/uzenetek")
+    public String AdminUzenetek(Model model) {
+        String str = B();
+        model.addAttribute("str", str);
+        return "uzenetek_lista";
+    }
+    String B(){
+        String str="";
+
+        for(Uzenet egyediUzenet: uzenetRepository.findAll()){
+            str+="<tr>";
+
+            str+="<td>" + egyediUzenet.getFelhasznalo() + "</td>";
+            str+="<td>" + egyediUzenet.getDatum() + "</td>";
+            str+="<td>" + egyediUzenet.getSzoveg() + "</td>";
 
             str+="</tr>";
         }
         return str;
     }
+
 
     @GetMapping("/home")
     public String homeoldal() {
@@ -74,6 +100,11 @@ public class HomeController {
 
         LocalDateTime now = LocalDateTime.now();
         uzenetOsztaly.setDatum(now);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userName = auth.getName();
+
+        uzenetOsztaly.setFelhasznalo(userName == "anonymousUser" ? "Vendég" : userName);
+
 
         if(!uzenetOsztaly.getSzoveg().isEmpty())
         {
