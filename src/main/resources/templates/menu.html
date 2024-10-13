@@ -21,6 +21,12 @@
                 </li>
                 </span>
 
+                <span sec:authorize="isAnonymous()">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/kapcsolat}">Kapcsolat</a>
+                </li>
+                </span>
+
 
 
                 <span sec:authorize="isAuthenticated()">

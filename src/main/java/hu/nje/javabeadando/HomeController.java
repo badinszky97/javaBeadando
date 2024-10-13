@@ -8,6 +8,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.sql.Time;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Controller
 public class HomeController {
     @GetMapping("/")
@@ -18,6 +23,7 @@ public class HomeController {
     @Autowired private KorlatozasRepo korlatozasRepo;
     @Autowired private MértékRepo mertekrepo;
     @Autowired private MegnevezésRepo megnevezésRepo;
+    @Autowired private UzenetRepository uzenetRepository;
     @GetMapping("/korlatozasok")
     public String Korlatok(Model model) {
         String str = A();
@@ -52,6 +58,29 @@ public class HomeController {
     @GetMapping("/home")
     public String homeoldal() {
         return "user";
+    }
+
+    @GetMapping("/kapcsolat")
+    public String urlapForm(Model model) { // Model model: Dependency injection
+        model.addAttribute("attr1", new Uzenet());
+        return "kapcsolat";
+    }
+
+    @PostMapping("/kapcsolat_eredmeny")
+    // UzenetOsztaly uzenetOsztaly és Model model: Dependency injection
+    public String urlapSubmit(@ModelAttribute Uzenet uzenetOsztaly, Model model) {
+
+        model.addAttribute("attr2", uzenetOsztaly);
+
+        LocalDateTime now = LocalDateTime.now();
+        uzenetOsztaly.setDatum(now);
+
+        if(!uzenetOsztaly.getSzoveg().isEmpty())
+        {
+            uzenetRepository.save(uzenetOsztaly);
+        }
+
+        return "kapcsolat_eredmeny";
     }
 
 
