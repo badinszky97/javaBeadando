@@ -4,16 +4,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 
-import java.sql.Time;
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Controller
 public class HomeController {
@@ -135,10 +130,56 @@ public class HomeController {
             }
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-// Regisztrációkor minden felhasználónak Vendég szerepet adunk:
         user.setRole("ROLE_Vendeg");
         userRepo.save(user);
         model.addAttribute("id", user.getId());
         return "regjo";
+    }
+}
+
+@RestController
+class KorlatozasRestController {
+    KorlatozasRepo repo;
+    KorlatozasRestController(KorlatozasRepo repo) { // Dependency injection
+        this.repo = repo;
+    }
+
+    @GetMapping("/public/korlatozasok")
+    Iterable<Korlatozas> olvasMind() {
+        return repo.findAll();
+    }
+
+   @GetMapping("/public/korlatozasok/{id}")
+    Korlatozas KorlatozasById(@PathVariable int id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new KorlatozasNemTalalhato(id));
+    }
+
+    @PostMapping("/public/ujkorlatozas")
+    Korlatozas korlatozasFeltolt(@RequestBody Korlatozas ujKrolatozas) {
+        return repo.save(ujKrolatozas);
+    }
+    @PutMapping("/public/modositkorlatozas/{id}")
+    Korlatozas szemelyModosit(@RequestBody Korlatozas adatSzemely, @PathVariable int id) {
+        return repo.findById(id)
+                .map(a -> {
+                    a.setKezdet(adatSzemely.getKezdet());
+                    a.setMeddig(adatSzemely.getMeddig());
+                    a.setVeg(adatSzemely.getVeg());
+                    a.setMegnevid(adatSzemely.getMegnevid());
+                    a.setMertekid(adatSzemely.getMertekid());
+                    a.setMettol(adatSzemely.getMettol());
+                    a.setSebesseg(adatSzemely.getSebesseg());
+                    a.setTelepules(adatSzemely.getTelepules());
+                    return repo.save(a);
+                })
+                .orElseGet(() -> { // ha nincs ilyen id-jű személy, akkor vegye fel új rekordnak
+                    adatSzemely.setUtszam(id);
+                    return repo.save(adatSzemely);
+                });
+    }
+    @DeleteMapping("/public/torol/{id}")
+    void torolkoraltozas(@PathVariable int id) {
+        repo.deleteById(id);
     }
 }
