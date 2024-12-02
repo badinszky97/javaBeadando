@@ -1,0 +1,2 @@
+A github nem enged 50MB-nál nagyobb fájlt feltölteni. A google driveból a jar fájl letölthető:
+https://drive.google.com/file/d/1TLEYFSn2qNDGgCLXy6cvrNWuR1_KAwCG/view?usp=sharing
